@@ -36,4 +36,9 @@ export class CustomerController {
   deleteCustomer(@Param('id') id: string) {
     return this.customerService.deleteCustomer(id);
   }
+
+  @Get()
+  getAllCustomers() {
+    return this.customerService.findAll();
+  }
 }

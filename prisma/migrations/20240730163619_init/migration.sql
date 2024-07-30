@@ -4,6 +4,8 @@ CREATE TABLE "Customer" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Customer_pkey" PRIMARY KEY ("id")
 );
@@ -14,6 +16,8 @@ CREATE TABLE "Item" (
     "description" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "unit_price" DECIMAL(65,30) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
 );
@@ -25,6 +29,8 @@ CREATE TABLE "Invoice" (
     "total_amount" DECIMAL(65,30) NOT NULL,
     "due_date" TIMESTAMP(3) NOT NULL,
     "status" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Invoice_pkey" PRIMARY KEY ("id")
 );
@@ -37,6 +43,8 @@ CREATE TABLE "InvoiceItem" (
     "quantity" INTEGER NOT NULL,
     "unit_price" DECIMAL(65,30) NOT NULL,
     "total" DECIMAL(65,30) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "InvoiceItem_pkey" PRIMARY KEY ("id")
 );

@@ -33,4 +33,9 @@ export class InvoiceController {
   getInvoiceById(@Param('id') id: string) {
     return this.invoiceService.getInvoiceById(id);
   }
+
+  @Get()
+  getAllInvoices() {
+    return this.invoiceService.findAll();
+  }
 }

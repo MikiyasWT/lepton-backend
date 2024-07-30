@@ -47,4 +47,11 @@ export class InvoiceService {
       include: { items: true },
     });
   }
+
+  async findAll() {
+    return this.prisma.invoice.findMany({
+      orderBy: { createdAt: 'desc' }, // Correct ordering
+      include: { items: true },
+    });
+  }
 }

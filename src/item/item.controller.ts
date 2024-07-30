@@ -33,4 +33,9 @@ export class ItemController {
   deleteItem(@Param('id') id: string) {
     return this.itemService.deleteItem(id);
   }
+
+  @Get()
+  getAllItems() {
+    return this.itemService.findAll();
+  }
 }

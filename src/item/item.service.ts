@@ -30,4 +30,10 @@ export class ItemService {
       where: { id },
     });
   }
+
+  async findAll() {
+    return this.prisma.item.findMany({
+      orderBy: { createdAt: 'desc' }, // Correct ordering
+    });
+  }
 }

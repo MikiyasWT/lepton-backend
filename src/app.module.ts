@@ -5,6 +5,7 @@ import { ItemModule } from './item/item.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { AuthModule } from './authentication/authentication.module';
 import { AuthentnpxModule } from './prisma/authentnpx/authentnpx.module';
+import { ExportModule } from './export/export.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthentnpxModule } from './prisma/authentnpx/authentnpx.module';
     InvoiceModule,
     AuthModule,
     AuthentnpxModule,
+    ExportModule,
   ],
   providers: [PrismaService],
 })

@@ -8,17 +8,24 @@ import {
   Get,
   UseGuards,
   NotFoundException,
+  Res,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
 import { JwtAuthGuard } from 'src/authentication/auth.guard';
 import { AdminGuard } from 'src/authentication/admin.guard';
 import { CustomerGuard } from 'src/authentication/customer.guard';
+import { ExportService } from '../export/export.service';
+import { Response } from 'express';
 
 @Controller('api/invoices')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class InvoiceController {
-  constructor(private invoiceService: InvoiceService) {}
+  // DI
+  constructor(
+    private readonly invoiceService: InvoiceService,
+    private readonly exportService: ExportService,
+  ) {}
 
   @Post()
   createInvoice(@Body() createInvoiceDto: CreateInvoiceDto) {
@@ -77,5 +84,44 @@ export class InvoiceController {
   @Get('customer/:customerId')
   async getInvoicesForCustomer(@Param('customerId') customerId: string) {
     return this.invoiceService.getInvoicesForCustomer(customerId);
+  }
+
+  //generate pdf
+  @Get('export/pdf/:invoiceId')
+  async exportInvoicePdf(
+    @Param('invoiceId') invoiceId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const pdfBuffer = await this.exportService.generateInvoicePdf(invoiceId);
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=invoice-${invoiceId}.pdf`,
+      );
+      res.setHeader('Content-Type', 'application/pdf');
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      res.status(500).send('Error generating PDF');
+    }
+  }
+
+  // Export Excel
+  @Get('export/excel')
+  async exportInvoicesExcel(@Res() res: Response) {
+    try {
+      const excelBuffer = await this.exportService.generateInvoicesExcel();
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename=invoices-report.xlsx',
+      );
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      res.send(excelBuffer);
+    } catch (error) {
+      res.status(500).send('Error generating Excel file');
+    }
   }
 }

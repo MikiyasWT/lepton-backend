@@ -95,11 +95,32 @@ export class InvoiceService {
     });
   }
 
+  // for admin
   async getInvoiceById(id: string) {
     return this.prisma.invoice.findUnique({
       where: { id },
       include: { items: true },
     });
+  }
+
+  //for customer
+  async getInvoiceByIdCustomer(customerId: string, invoiceId: string) {
+    // Find the invoice and include items
+    const invoice = await this.prisma.invoice.findUnique({
+      where: { id: invoiceId },
+      include: { items: true },
+    });
+
+    // Check if the invoice exists and is associated with the given customerId
+    if (!invoice || invoice.customerId !== customerId) {
+      throw new NotFoundException({
+        message: `Invoice with id ${invoiceId} not found for customer with id ${customerId}`,
+        error: 'Not Found',
+        statusCode: 404,
+      });
+    }
+
+    return invoice;
   }
 
   async getInvoicesForCustomer(customerId: string) {

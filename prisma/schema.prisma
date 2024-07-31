@@ -18,6 +18,7 @@ model Customer {
   name      String
   email     String   @unique
   password  String
+  role      String 
   invoices  Invoice[]
   createdAt DateTime @default(now()) 
   updatedAt DateTime @updatedAt

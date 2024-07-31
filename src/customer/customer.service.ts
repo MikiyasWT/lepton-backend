@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto';
 import * as bcrypt from 'bcrypt';
@@ -39,6 +43,18 @@ export class CustomerService {
   }
 
   async deleteCustomer(id: string) {
+    const customer = await this.prisma.customer.findUnique({
+      where: { id },
+    });
+
+    if (!customer) {
+      throw new NotFoundException({
+        message: 'Customer Not Found',
+        error: 'Not Found',
+        statusCode: 404,
+      });
+    }
+
     return this.prisma.customer.delete({
       where: { id },
     });

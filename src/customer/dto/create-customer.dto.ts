@@ -9,4 +9,7 @@ export class CreateCustomerDto {
 
   @IsString()
   password: string;
+
+  @IsString()
+  role: string;
 }

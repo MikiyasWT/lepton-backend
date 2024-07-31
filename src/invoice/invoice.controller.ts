@@ -6,11 +6,14 @@ import {
   Put,
   Delete,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
+import { JwtAuthGuard } from 'src/authentication/auth.guard';
 
 @Controller('api/invoices')
+@UseGuards(JwtAuthGuard)
 export class InvoiceController {
   constructor(private invoiceService: InvoiceService) {}
 

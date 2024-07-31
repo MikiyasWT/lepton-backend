@@ -6,9 +6,11 @@ import {
   Put,
   Delete,
   Get,
+  UseGuards,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto';
+import { JwtAuthGuard } from 'src/authentication/auth.guard';
 
 @Controller('api/customers')
 export class CustomerController {
@@ -20,6 +22,7 @@ export class CustomerController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   updateCustomer(
     @Param('id') id: string,
     @Body() updateCustomerDto: UpdateCustomerDto,
@@ -28,16 +31,19 @@ export class CustomerController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   getCustomerById(@Param('id') id: string) {
     return this.customerService.getCustomerById(id);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   deleteCustomer(@Param('id') id: string) {
     return this.customerService.deleteCustomer(id);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   getAllCustomers() {
     return this.customerService.findAll();
   }

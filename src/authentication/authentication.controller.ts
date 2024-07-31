@@ -12,12 +12,16 @@ export class AuthController {
     @Res() res: Response,
   ) {
     const user = await this.authService.validateUser(body.email, body.password);
-    if (user) {
-      const { access_token } = await this.authService.login(user);
-      res.cookie('access_token', access_token, { httpOnly: true });
-      return res.send({ access_token });
+    if (!user) {
+      return res.status(401).json({
+        message: 'Invalid Email or Password Used',
+        error: 'Unauthorized',
+        statusCode: 401,
+      });
     }
-    return res.status(401).send('Invalid credentials');
+    const { access_token } = await this.authService.login(user);
+    res.cookie('access_token', access_token, { httpOnly: true });
+    return res.send({ access_token });
   }
 
   @Post('signup')

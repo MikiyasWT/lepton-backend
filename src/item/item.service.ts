@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateItemDto, UpdateItemDto } from './dto';
 
@@ -20,9 +20,19 @@ export class ItemService {
   }
 
   async getItemById(id: string) {
-    return this.prisma.item.findUnique({
+    const item = await this.prisma.item.findUnique({
       where: { id },
     });
+
+    if (!item) {
+      throw new NotFoundException({
+        message: 'Item Not Found',
+        error: 'Not Found',
+        statusCode: 404,
+      });
+    }
+
+    return item;
   }
 
   async deleteItem(id: string) {

@@ -7,6 +7,7 @@ import {
   Delete,
   Get,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
@@ -33,8 +34,12 @@ export class InvoiceController {
   }
 
   @Get(':id')
-  getInvoiceById(@Param('id') id: string) {
-    return this.invoiceService.getInvoiceById(id);
+  async getInvoiceById(@Param('id') id: string) {
+    const invoice = await this.invoiceService.getInvoiceById(id);
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with ID ${id} not found`);
+    }
+    return invoice;
   }
 
   @Get()

@@ -41,6 +41,7 @@ export class InvoiceService {
           quantity: item.quantity,
           unit_price: foundItem.unit_price,
           total: total.toNumber(),
+          description: foundItem.description, // Include description
         };
       }),
     );
@@ -58,6 +59,7 @@ export class InvoiceService {
         items: {
           create: itemsData.map((item) => ({
             item: { connect: { id: item.itemId } },
+            description: item.description, // Use the description from itemsData
             quantity: item.quantity,
             unit_price: item.unit_price,
             total: item.total,
@@ -96,6 +98,13 @@ export class InvoiceService {
   async getInvoiceById(id: string) {
     return this.prisma.invoice.findUnique({
       where: { id },
+      include: { items: true },
+    });
+  }
+
+  async getInvoicesForCustomer(customerId: string) {
+    return this.prisma.invoice.findMany({
+      where: { customerId },
       include: { items: true },
     });
   }

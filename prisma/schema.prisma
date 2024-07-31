@@ -51,6 +51,7 @@ model InvoiceItem {
   invoiceId   String
   item        Item    @relation(fields: [itemId], references: [id])
   itemId      String
+  description  String?
   quantity    Int
   unit_price  Decimal
   total       Decimal

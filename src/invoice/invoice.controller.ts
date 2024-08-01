@@ -19,7 +19,7 @@ import { ExportService } from '../export/export.service';
 import { Response } from 'express';
 
 @Controller('api/invoices')
-// @UseGuards(JwtAuthGuard)
+//@UseGuards(JwtAuthGuard)
 export class InvoiceController {
   // DI
   constructor(
@@ -106,11 +106,33 @@ export class InvoiceController {
     }
   }
 
-  // Export Excel
+  // Export Excel admin
   @Get('export/excel')
   async exportInvoicesExcel(@Res() res: Response) {
     try {
       const excelBuffer = await this.exportService.generateInvoicesExcel();
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename=invoices-report.xlsx',
+      );
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      res.send(excelBuffer);
+    } catch (error) {
+      res.status(500).send('Error generating Excel file');
+    }
+  }
+
+  @Get('export/excel/:customerId')
+  async exportCustomerInvoicesExcel(
+    @Param('customerId') customerId: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const excelBuffer =
+        await this.exportService.generateCustomersInvoicesExcel(customerId);
       res.setHeader(
         'Content-Disposition',
         'attachment; filename=invoices-report.xlsx',

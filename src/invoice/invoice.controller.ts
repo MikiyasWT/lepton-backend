@@ -14,12 +14,11 @@ import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
 import { JwtAuthGuard } from 'src/authentication/auth.guard';
 import { AdminGuard } from 'src/authentication/admin.guard';
-import { CustomerGuard } from 'src/authentication/customer.guard';
 import { ExportService } from '../export/export.service';
 import { Response } from 'express';
 
 @Controller('api/invoices')
-//@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class InvoiceController {
   // DI
   constructor(
@@ -33,19 +32,20 @@ export class InvoiceController {
   }
 
   @Put(':id/pay')
-  @UseGuards(JwtAuthGuard, AdminGuard, CustomerGuard)
   payInvoice(@Param('id') id: string, @Body() payInvoiceDto: PayInvoiceDto) {
     return this.invoiceService.payInvoice(id, payInvoiceDto);
   }
 
+  // admin can only delete invoices
   @Delete(':id')
   @UseGuards(JwtAuthGuard, AdminGuard)
   deleteInvoice(@Param('id') id: string) {
     return this.invoiceService.deleteInvoice(id);
   }
 
-  // for admin
+  // get an invoice for admin
   @Get(':id')
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async getInvoiceById(@Param('id') id: string) {
     const invoice = await this.invoiceService.getInvoiceById(id);
     if (!invoice) {
@@ -54,7 +54,7 @@ export class InvoiceController {
     return invoice;
   }
 
-  // for customer
+  // get an invoice for customer
   @Get('customer/:customerId/:invoiceId')
   async getInvoiceByIdCustomer(
     @Param('customerId') customerId: string,
@@ -76,6 +76,7 @@ export class InvoiceController {
 
   // get all invoices for an admin role
   @Get()
+  @UseGuards(JwtAuthGuard, AdminGuard)
   getAllInvoices() {
     return this.invoiceService.findAll();
   }
@@ -107,6 +108,7 @@ export class InvoiceController {
   }
 
   // Export Excel admin
+  @UseGuards(JwtAuthGuard, AdminGuard)
   @Get('export/excel')
   async exportInvoicesExcel(@Res() res: Response) {
     try {
@@ -125,6 +127,7 @@ export class InvoiceController {
     }
   }
 
+  //export excel for customer
   @Get('export/excel/:customerId')
   async exportCustomerInvoicesExcel(
     @Param('customerId') customerId: string,

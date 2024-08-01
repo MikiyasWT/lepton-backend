@@ -50,9 +50,60 @@ export class ExportService {
     });
   }
 
+  // export all invoice to excel only for admin
   async generateInvoicesExcel(): Promise<Buffer> {
     // Fetch invoices with their associated items
     const invoices = await this.prisma.invoice.findMany({
+      include: { items: true },
+    });
+
+    // Create a new workbook and worksheet
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Invoices');
+
+    // Define columns
+    worksheet.columns = [
+      { header: 'Invoice ID', key: 'invoiceId', width: 20 },
+      { header: 'Customer ID', key: 'customerId', width: 20 },
+      { header: 'Total Amount', key: 'totalAmount', width: 15 },
+      { header: 'Due Date', key: 'dueDate', width: 15 },
+      { header: 'Status', key: 'status', width: 15 },
+      { header: 'Item ID', key: 'itemId', width: 20 },
+      { header: 'Description', key: 'description', width: 30 },
+      { header: 'Quantity', key: 'quantity', width: 10 },
+      { header: 'Unit Price', key: 'unitPrice', width: 15 },
+      { header: 'Total', key: 'total', width: 15 },
+    ];
+
+    // Add rows
+    invoices.forEach((invoice) => {
+      invoice.items.forEach((item) => {
+        worksheet.addRow({
+          invoiceId: invoice.id,
+          customerId: invoice.customerId,
+          totalAmount: invoice.total_amount,
+          dueDate: invoice.due_date.toISOString().split('T')[0], // Format date
+          status: invoice.status,
+          itemId: item.itemId,
+          description: item.description,
+          quantity: item.quantity,
+          unitPrice: item.unit_price,
+          total: item.total,
+        });
+      });
+    });
+
+    // Create a buffer
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    return buffer as Buffer;
+  }
+
+  // generate excel invoice report for a custromer
+  async generateCustomersInvoicesExcel(customerId: string): Promise<Buffer> {
+    // Fetch invoices with their associated items for the specified customer
+    const invoices = await this.prisma.invoice.findMany({
+      where: { customerId },
       include: { items: true },
     });
 

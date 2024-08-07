@@ -6,19 +6,16 @@ import {
   Put,
   Delete,
   Get,
-  UseGuards,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto';
-import { JwtAuthGuard } from 'src/authentication/auth.guard';
-import { AdminGuard } from 'src/authentication/admin.guard';
 
 //only a customer with an admin role can run this controller
 //for admin purposes
 // for test purpose use email mikiywendu44@gmail.com and password 123456
 
 @Controller('api/customers')
-@UseGuards(JwtAuthGuard, AdminGuard)
+// @UseGuards(JwtAuthGuard, AdminGuard)
 export class CustomerController {
   constructor(private customerService: CustomerService) {}
 

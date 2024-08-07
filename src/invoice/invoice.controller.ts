@@ -6,15 +6,11 @@ import {
   Put,
   Delete,
   Get,
-  UseGuards,
   NotFoundException,
   Res,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
-import { JwtAuthGuard } from 'src/authentication/auth.guard';
-import { AdminGuard } from 'src/authentication/admin.guard';
-import { CustomerGuard } from 'src/authentication/customer.guard';
 import { ExportService } from '../export/export.service';
 import { Response } from 'express';
 
@@ -33,13 +29,13 @@ export class InvoiceController {
   }
 
   @Put(':id/pay')
-  @UseGuards(JwtAuthGuard, AdminGuard, CustomerGuard)
+  // @UseGuards(JwtAuthGuard, AdminGuard, CustomerGuard)
   payInvoice(@Param('id') id: string, @Body() payInvoiceDto: PayInvoiceDto) {
     return this.invoiceService.payInvoice(id, payInvoiceDto);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  // @UseGuards(JwtAuthGuard, AdminGuard)
   deleteInvoice(@Param('id') id: string) {
     return this.invoiceService.deleteInvoice(id);
   }

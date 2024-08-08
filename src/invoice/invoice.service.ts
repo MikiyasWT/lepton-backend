@@ -6,10 +6,14 @@ import {
 import { PrismaService } from '../prisma.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
 import { Decimal } from '@prisma/client/runtime/library';
+import { CustomerService } from 'src/customer/customer.service';
 
 @Injectable()
 export class InvoiceService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly customerService: CustomerService,
+  ) {}
 
   async createInvoice(data: CreateInvoiceDto) {
     const itemsData = await Promise.all(
@@ -131,9 +135,24 @@ export class InvoiceService {
   }
 
   async findAll() {
-    return this.prisma.invoice.findMany({
-      orderBy: { createdAt: 'desc' }, // Correct ordering
+    const invoices = await this.prisma.invoice.findMany({
+      orderBy: { createdAt: 'desc' },
       include: { items: true },
     });
+
+    // Fetch customer details for each invoice
+    const invoicesWithCustomer = await Promise.all(
+      invoices.map(async (invoice) => {
+        const customer = await this.customerService.getCustomerById(
+          invoice.customerId,
+        );
+        return {
+          ...invoice,
+          customerName: customer?.name, // Adjust according to your schema
+        };
+      }),
+    );
+
+    return invoicesWithCustomer;
   }
 }

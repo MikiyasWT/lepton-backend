@@ -31,6 +31,7 @@
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.14.1",
     "decimal.js": "^10.4.3",
+    "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
     "nestjs-prisma": "^0.23.0",
     "passport": "^0.7.0",

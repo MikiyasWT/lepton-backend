@@ -11,13 +11,11 @@ import {
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto, PayInvoiceDto } from './dto';
-import { JwtAuthGuard } from 'src/authentication/auth.guard';
-import { AdminGuard } from 'src/authentication/admin.guard';
 import { ExportService } from '../export/export.service';
 import { Response } from 'express';
 
 @Controller('api/invoices')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class InvoiceController {
   // DI
   constructor(
@@ -44,7 +42,7 @@ export class InvoiceController {
 
   // get an invoice for admin
   @Get(':id')
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  // @UseGuards(JwtAuthGuard, AdminGuard)
   async getInvoiceById(@Param('id') id: string) {
     const invoice = await this.invoiceService.getInvoiceById(id);
     if (!invoice) {
@@ -75,7 +73,7 @@ export class InvoiceController {
 
   // get all invoices for an admin role
   @Get()
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  // @UseGuards(JwtAuthGuard, AdminGuard)
   getAllInvoices() {
     return this.invoiceService.findAll();
   }
@@ -107,7 +105,7 @@ export class InvoiceController {
   }
 
   // Export Excel admin
-  @UseGuards(JwtAuthGuard, AdminGuard)
+  // @UseGuards(JwtAuthGuard, AdminGuard)
   @Get('export/excel')
   async exportInvoicesExcel(@Res() res: Response) {
     try {

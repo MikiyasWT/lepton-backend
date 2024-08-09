@@ -36,7 +36,7 @@ export class ExportService {
       // Header with logo and company information
       const logoPath = path.join(
         process.cwd(),
-        '../backend/src/assets/images/lepton.png',
+        '../lepton-backend/src/assets/images/lepton.png',
       );
 
       doc.fontSize(12).fillColor('black');
